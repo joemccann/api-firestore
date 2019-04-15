@@ -96,11 +96,27 @@ exports['api-firestore'] = async (req, res) => {
 
   let collection = query.collection || null
   let document = query.document || null
+  const allDocs = query.allDocs || false
 
   if (!(collection && collection.length)) {
     return res.status(404).send({
       err: 'No collection name is present to query.'
     })
+  }
+
+  if (allDocs) {
+    try {
+      const snapshot = await db.collection(collection).get()
+
+      const data = []
+      snapshot.forEach(doc => {
+        data.push(doc.data())
+      })
+
+      return res.status(200).send({ data })
+    } catch (e) {
+      return res.status(404).send({ err: e.message || e })
+    }
   }
 
   if (!(document && document.length)) {

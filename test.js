@@ -84,7 +84,7 @@ test('fail - POST new document, missing document', async t => {
   t.end()
 })
 
-test('pass - GET user by document name', async t => {
+test('pass - GET document by document name', async t => {
   const req = {
     method: 'GET',
     query: {
@@ -104,7 +104,7 @@ test('pass - GET user by document name', async t => {
   t.end()
 })
 
-test('fail - GET user by document name', async t => {
+test('fail - GET document by document name', async t => {
   const req = {
     method: 'GET',
     query: {
@@ -118,6 +118,23 @@ test('fail - GET user by document name', async t => {
   t.ok(!data)
   t.equals(statusCode, 404)
   t.equals(err, 'Unable to find the document for xxx.')
+  t.end()
+})
+
+test('pass - GET all documents from a collection', async t => {
+  const req = {
+    method: 'GET',
+    query: {
+      allDocs: true,
+      collection
+    }
+  }
+
+  const { err, data, statusCode } = await firestore(req, res)
+  t.ok(!err)
+  t.ok(data)
+  t.ok(data.length, 1)
+  t.equals(statusCode, 200)
   t.end()
 })
 
@@ -142,7 +159,7 @@ test('pass - POST update document', async t => {
   t.end()
 })
 
-test('pass - GET user by document, verify update', async t => {
+test('pass - GET document by document, verify update', async t => {
   const req = {
     method: 'GET',
     query: {
@@ -182,7 +199,7 @@ test('fail - POST update document, document already exists', async t => {
   t.end()
 })
 
-test('pass - DELETE user by document', async t => {
+test('pass - DELETE document by document', async t => {
   const req = {
     method: 'DELETE',
     query: {
@@ -199,7 +216,7 @@ test('pass - DELETE user by document', async t => {
   t.end()
 })
 
-test('fail - DELETE user by document, no document or collection', async t => {
+test('fail - DELETE document by document, no document or collection', async t => {
   const req = {
     method: 'DELETE',
     query: {}
