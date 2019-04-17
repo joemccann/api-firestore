@@ -1,10 +1,15 @@
+const cors = require('cors-for-cloud-functions')
 const Firestore = require('@google-cloud/firestore')
 
 const PROJECTID = process.env.PROJECT || null
 
 const db = new Firestore({ projectId: PROJECTID })
 
-exports['api-firestore'] = async (req, res) => {
+exports['api-firestore'] = async (request, response) => {
+  const { req, res, isOptions } = cors(request, response)
+
+  if (isOptions) return res.status(204).send('')
+
   const {
     body,
     query
